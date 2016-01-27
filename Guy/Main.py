@@ -10,7 +10,7 @@ screenWidth = 800
 screenHeight = 700
 screenSize = screenWidth, screenHeight
 mainSurface = pygame.display.set_mode(screenSize, pygame.RESIZABLE)
-
+tileSheetTile = None
 
 #function used for primary initialization 
 def mainInit():
@@ -45,7 +45,7 @@ def button(msg, x, y, width, height, normalColor, hoverColor, callbackFunction =
     #get state of the left mouse button
     leftMouseDown = pygame.mouse.get_pressed()[0] == 1
 
-    #check if the mouse is hovering over the button
+    #check if the mouse is over the button
     if ((x + width) > mouse[0] > x) and ((y + height) > mouse[1] > y):
         pygame.draw.rect(mainSurface, hoverColor, (x, y, width, height))
 
@@ -67,8 +67,6 @@ def button(msg, x, y, width, height, normalColor, hoverColor, callbackFunction =
         
 #setup pygame window and main menu   
 def initGame():
-#    tile = Editor.MapTileModule.MapTile(0,0, CollectionsModule.TileType.ROAD) 
-
    
     #menu logo image
     logo = pygame.image.load("GameLogo.gif")
@@ -76,7 +74,7 @@ def initGame():
     logoPos = (screenWidth / 2) - (logoRect.size[0]/2), (screenHeight / 4) - (logoRect.size[1]/2)
 
 
-    
+    #game loop using while the menu is active
     while True: 
         for event in pygame.event.get():
             if event.type == pygame.QUIT: 
@@ -91,17 +89,13 @@ def initGame():
         button("Tutorial", screenWidth / 2 - 50, 425, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red)
         button("Settings", screenWidth / 2 - 50, 500, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red)
         button("Quit", screenWidth / 2 - 50, 575, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red, exit)
-
+        
+        #update entire display 
         pygame.display.flip()
+
         #60fps or lower
         clock.tick(60)
 
-
-    tileSize = 100, 100
-
-    diamond = pygame.image.load("diamond.jpg")
-    pygame.transform.scale(diamond, tileSize)
-    diamondRect = diamond.get_rect()
 
 
 
@@ -111,32 +105,63 @@ def initGame():
 #   MAIN GAME LOOP
 #----------------------------------------------------------------------
 def mainGameLoop():
+    
+    #black background
     mainSurface.fill(CollectionsModule.Color.black)
 
+    #game loop
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT: 
                 exit()
 
+        #mouse position
+        mouse = pygame.mouse.get_pos()
+
+        #get state of the left mouse button
+        leftMouseDown = pygame.mouse.get_pressed()[0] == 1
+
+        #show the tilesheet and get the 2D array representing all the tilesheet tiles
+        tileTable = Editor.getTileSheet(mainSurface, "Assets/TileSets/tileset1.png", 24, 16, True, 550, 50)
         
+        global tileSheetTile
+        for i in range(0, len(tileTable)):
+            for j in range(0, len(tileTable[0])):
+#                if ((x + width) > mouse[0] > x) and ((y + height) > mouse[1] > y):
+                if((i * 32 + 550 + 32) > mouse[0] > i * 32 + 550) and ((j * 24 + 50 + 32) > mouse[1] >  j * 24 + 50):
+                    if(leftMouseDown):
+                        tileSheetTile = tileTable[i][j]
+        
+        
+        
+        mapTileSize = 100, 100
+        mapGrid = [[None] * 5] * 5 
+        
+        #draw the red rectangles
         for i in range(0, 5):
-            for j in range(0, 5):
-                tile = pygame.draw.rect(mainSurface, (255,0,0), (100 * i, j * 100,100,100), 1)
-                
             
-        Editor.getTileSheet(mainSurface, "Assets/TileSets/tileset1.png", 24, 16, True, 550, 50)
+            for j in range(0, 5):
+                tile = pygame.draw.rect(mainSurface, (255,0,0), (i * mapTileSize[0], j * mapTileSize[1], mapTileSize[0], mapTileSize[0]), 1)
+                    
+                #if a map tile was selected from the tilesheet check if the user clicked a rectangle to paint it
+                if tileSheetTile != None:
+                    if ((100 * i + 100) > mouse[0] > 100 * i) and ((100 * j + 100) > mouse[1] > 100 * j):
+                        if(leftMouseDown):
+                            tileSheetTile = pygame.transform.scale(tileSheetTile, mapTileSize)
+                            mainSurface.blit(tileSheetTile, (i * mapTileSize[0], j * mapTileSize[1]))            
+                            
 
         pygame.display.update()
-
         clock.tick(60)
-        #update the display
-        #pygame.display.flip()
+
+
 
 
 #exit pygame and quit the program
 def exit():
     pygame.quit()
     quit()
+
 
 
 #entry point for the entire game
