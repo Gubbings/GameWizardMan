@@ -12,6 +12,8 @@ screenSize = screenWidth, screenHeight
 mainSurface = pygame.display.set_mode(screenSize, pygame.RESIZABLE)
 tileSheetTile = None
 selectedTileSheet = None
+selectedTileType = None
+selectedTileTypeNum = None
 mapTiles = [[None] * 5] * 5
 
 #function used for primary initialization 
@@ -86,7 +88,7 @@ def initGame():
         mainSurface.blit(logo, logoPos)
      
 
-        #placeholder rectangles that will be used for button
+        #rectangles that will be used for buttons - some are placeholders
         button("Play", screenWidth / 2 - 50, 350, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red, mainGameLoop)
         button("Tutorial", screenWidth / 2 - 50, 425, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red)
         button("Settings", screenWidth / 2 - 50, 500, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red)
@@ -115,6 +117,7 @@ def mainGameLoop():
     while True:
         global selectedTileSheet
         global mapTiles
+        global selectedTileType
         mapTileSize = 100, 100
 
         for event in pygame.event.get():
@@ -140,7 +143,12 @@ def mainGameLoop():
                         tileSheetTile = tileTable[i][j]
                         selectedTileSheetTile = (i, j)
         
-         
+
+        global selectedTileTypeNum
+        for i in range(1, 5):
+             selectedTileTypeNum = i
+             button(str(i), 550 + (i - 1) * 50, 200, 25, 25, CollectionsModule.Color.green, CollectionsModule.Color.red, setSelectedTileType) 
+        
 
         #draw the red rectangles
         for i in range(0, 5):
@@ -149,16 +157,29 @@ def mainGameLoop():
                 tile = pygame.draw.rect(mainSurface, (255,0,0), (i * mapTileSize[0], j * mapTileSize[1], mapTileSize[0], mapTileSize[0]), 3)
                     
                 #if a map tile was selected from the tilesheet check if the user clicked a rectangle to paint it
-                if tileSheetTile != None:
+                if tileSheetTile != None and selectedTileType != None:
                     if ((100 * i + 100) > mouse[0] > 100 * i) and ((100 * j + 100) > mouse[1] > 100 * j):
                         if(leftMouseDown):
                             tileSheetTile = pygame.transform.scale(tileSheetTile, mapTileSize)
                             mainSurface.blit(tileSheetTile, (i * mapTileSize[0], j * mapTileSize[1]))            
-                            mapTiles[i][j] = MapTileModule.MapTile((i,j), (0,0), CollectionsModule.TileType.ROAD)
+                            mapTiles[i][j] = MapTileModule.MapTile((i,j), selectedTileSheetTile, selectedTileType)
 
         pygame.display.update()
         clock.tick(60)
 
+
+def setSelectedTileType():
+    global selectedTileTypeNum
+    global selectedTileType
+    if(selectedTileTypeNum == 1):
+        selectedTileType = CollectionsModule.TileType.OUTER_WALL
+    if(selectedTileTypeNum == 2):
+        selectedTileType = CollectionsModule.TileType.ROAD
+    if(selectedTileTypeNum == 3):
+        selectedTileType = CollectionsModule.TileType.BUILDABLE_SURFACE
+    if(selectedTileTypeNum == 4):
+        selectedTileType = CollectionsModule.TileType.PLAYER_BASE
+    print(selectedTileType)        
 
 
 def saveMap(fileName, mapTilesArray):
