@@ -1,6 +1,6 @@
 import CollectionsModule
 import MenuModule
-#import MapTileModule
+import MapTileModule
 import pygame
 import Editor
 
@@ -11,6 +11,8 @@ screenHeight = 700
 screenSize = screenWidth, screenHeight
 mainSurface = pygame.display.set_mode(screenSize, pygame.RESIZABLE)
 tileSheetTile = None
+selectedTileSheet = None
+mapTiles = [[None] * 5] * 5
 
 #function used for primary initialization 
 def mainInit():
@@ -111,8 +113,13 @@ def mainGameLoop():
 
     #game loop
     while True:
+        global selectedTileSheet
+        global mapTiles
+        mapTileSize = 100, 100
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT: 
+                saveMap("Map1", mapTiles)
                 exit()
 
         #mouse position
@@ -131,17 +138,15 @@ def mainGameLoop():
                 if((i * 32 + 550 + 32) > mouse[0] > i * 32 + 550) and ((j * 24 + 50 + 32) > mouse[1] >  j * 24 + 50):
                     if(leftMouseDown):
                         tileSheetTile = tileTable[i][j]
+                        selectedTileSheetTile = (i, j)
         
-        
-        
-        mapTileSize = 100, 100
-        mapGrid = [[None] * 5] * 5 
-        
+         
+
         #draw the red rectangles
         for i in range(0, 5):
             
             for j in range(0, 5):
-                tile = pygame.draw.rect(mainSurface, (255,0,0), (i * mapTileSize[0], j * mapTileSize[1], mapTileSize[0], mapTileSize[0]), 1)
+                tile = pygame.draw.rect(mainSurface, (255,0,0), (i * mapTileSize[0], j * mapTileSize[1], mapTileSize[0], mapTileSize[0]), 3)
                     
                 #if a map tile was selected from the tilesheet check if the user clicked a rectangle to paint it
                 if tileSheetTile != None:
@@ -149,13 +154,25 @@ def mainGameLoop():
                         if(leftMouseDown):
                             tileSheetTile = pygame.transform.scale(tileSheetTile, mapTileSize)
                             mainSurface.blit(tileSheetTile, (i * mapTileSize[0], j * mapTileSize[1]))            
-                            
+                            mapTiles[i][j] = MapTileModule.MapTile((i,j), (0,0), CollectionsModule.TileType.ROAD)
 
         pygame.display.update()
         clock.tick(60)
 
 
 
+def saveMap(fileName, mapTilesArray):
+    if fileName != "":
+#        f = open("Assets/Maps/".join(fileName).join("txt"), 'w')
+        f = open("Assets/Maps/map1.txt", 'w')        
+        
+        for i in range(0, len(mapTilesArray)):
+            for j in range(0, len(mapTilesArray[0])):
+                if(mapTilesArray[i][j] != None):
+                    f.write(str(mapTilesArray[i][j].mapPos) + ", " + str(mapTilesArray[i][j].tilesheetPos) + ", " + str(mapTilesArray[i][j].tileType) + "\n")
+
+        print "Map Saved"
+        f.close()
 
 #exit pygame and quit the program
 def exit():

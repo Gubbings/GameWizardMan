@@ -1,4 +1,3 @@
-import MapTileModule
 import pygame
 
 def load_tile_table(filename, width, height):
@@ -22,11 +21,9 @@ def load_tile_table(filename, width, height):
 def getTileSheet(surface, tileSheetPath, tileWidth, tileHeight, render=False, xPos=0, yPos=0):
     tileTable = load_tile_table(tileSheetPath, tileWidth, tileHeight)
 
-    grid = [];
     for x, row in enumerate(tileTable):
-        line = [];
         for y, tile in enumerate(row):
             if(render):
                 surface.blit(tile, (x*32 + xPos, y*24 + yPos))
 
-
+    return tileTable
