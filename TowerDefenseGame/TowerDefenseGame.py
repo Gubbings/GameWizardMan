@@ -8,8 +8,8 @@ screenWidth = 800
 screenHeight = 700
 screenSize = screenWidth, screenHeight
 mainSurface = pygame.display.set_mode(screenSize, pygame.RESIZABLE)
-joystick = None
 tileSelectSprite = pygame.image.load("Assets/selectSprite.gif")
+
 
 #maps
 map1 = load_pygame('Assets/Maps/testMap.tmx')
@@ -18,14 +18,9 @@ map1 = load_pygame('Assets/Maps/testMap.tmx')
 def mainInit():
     #initialize pygame
     pygame.init()
-    #initialize the joysticks
     pygame.joystick.init()
-
-    #get the joystick
-    global joystick 
-    if(pygame.joystick.get_count() > 0):
-        joystick = pygame.joystick.Joystick(0)
-    
+          
+    #set the background color
     backgroundColor = 66, 61, 60
     mainSurface.fill(backgroundColor)
 
@@ -34,6 +29,7 @@ def mainInit():
 
 #function used for rendering text - returns a surface and the associated rectangle for that surface
 def text_objects(text, font):
+    #render the text with a color of black
     textSurface = font.render(text, True, CollectionsModule.Color.black)
     return textSurface, textSurface.get_rect()
 
@@ -110,12 +106,11 @@ def initGame():
 #----------------------------------------------------------------------
 #   MAIN GAME LOOP
 #----------------------------------------------------------------------
-def mainGameLoop():
-    #ensure that the joystick is initialized    
-    global joystick
-    if(joystick != None):
-        joystick.init()
-   
+def mainGameLoop():    
+    #get the first connected joystick     
+    controller = pygame.joystick.Joystick(0)
+    controller.init()             
+
     #black background
     mainSurface.fill(CollectionsModule.Color.black)
 
@@ -149,14 +144,45 @@ def mainGameLoop():
             xBound = x
         if(y > yBound):
             yBound = y
+    
+    #create a new user event for tracking joystick movement
+    JOYSTICK_MOVE_EVENT = pygame.USEREVENT+1
+    t = 500
+
+    #cause a joystick move event every 500 milliseconds
+    pygame.time.set_timer(JOYSTICK_MOVE_EVENT, t)
 
     #game loop
-    while True:        
+    while True:                      
         for event in pygame.event.get():                        
             if event.type == pygame.QUIT: 
                 exit()
-        
-        
+
+            #read joystick position for a joystick move event
+            if event.type == JOYSTICK_MOVE_EVENT:                
+                                               
+                #position of the joystick axis
+                h_axis = controller.get_axis(0)        
+                v_axis = controller.get_axis(1)
+                deadZone = 0.5
+
+                #check if user is moving the joystick horizontally
+                if(h_axis < -deadZone):            
+                    if(selectSpriteX > 0):
+                        selectSpriteX -= 1                                
+                elif(h_axis > deadZone):
+                    if(selectSpriteX < xBound):
+                        selectSpriteX += 1
+                
+                #check if user is moving the joystick vertically
+                if(v_axis < -deadZone):
+                    if(selectSpriteY > 0):
+                        selectSpriteY -= 1                
+                elif(v_axis > deadZone):
+                    if(selectSpriteY < yBound):
+                        selectSpriteY += 1
+
+               
         #display all of the tiles from the tiled map
         for layer in map1.layers:
             #we have marked object layers as invisible because they have no images 
@@ -168,27 +194,6 @@ def mainGameLoop():
         #display the tile selection sprite
         mainSurface.blit(tileSelectSprite, (selectSpriteX * 32, selectSpriteY * 32))
 
-        if(joystick != None):           
-            #position of the joystick axis
-            h_axis = joystick.get_axis(0)        
-            v_axis = joystick.get_axis(1)
-            deadZone = 0.5
-
-            #check if user is moving the joystick horizontally
-            if(h_axis < -deadZone):            
-                if(selectSpriteX > 0):
-                    selectSpriteX -= 1                                
-            elif(h_axis > deadZone):
-                if(selectSpriteX < xBound):
-                    selectSpriteX += 1
-                
-            #check if user is moving the joystick vertically
-            if(v_axis < -deadZone):
-                if(selectSpriteY > 0):
-                    selectSpriteY -= 1                
-            elif(v_axis > deadZone):
-                if(selectSpriteY < yBound):
-                    selectSpriteY += 1
                 
         #draw the npc
         npc = pygame.draw.rect(mainSurface, CollectionsModule.Color.red, (npcX, npcY, 32, 32))
