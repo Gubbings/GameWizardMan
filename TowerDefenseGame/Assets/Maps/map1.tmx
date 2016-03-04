@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="22" height="18" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="tileSet1" tilewidth="32" tileheight="32" tilecount="256">
+  <image source="tileSet1.png" width="512" height="512"/>
+  <terraintypes>
+   <terrain name="Ground" tile="-1"/>
+  </terraintypes>
+ </tileset>
+ <tileset firstgid="257" name="tileSet2" tilewidth="32" tileheight="32" tilecount="256">
+  <image source="tileSet2.png" width="512" height="512"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="22" height="18">
+  <data encoding="base64" compression="zlib">
+   eJzd1DkKwkAUxvHg0li6IE5I41JEsVIQtVRUtFfxBKIX8DTqCdQTqEfzG3gDj0cWMkxl8WMyCfnPJIQoz/MUGTFHMeca7B4fQugyPXZdWzIXKItzhuyOYcJMRZcLSNQ12Y1aO66rErohO9bPvKDWio023RzkoQBF2MIO9my06er3XoEq1GANGyGtK+nzTWhBGzpwgCu5wT2lG7WOT+MAhrRX3X2QJ7wsusYM5nT8hg8bvxm75rvSrT4JaL91IWvX7LvEuOzyuW037rswTnAWbPbnQtJ/4t+bLt7pD0KnO1Q=
+  </data>
+ </layer>
+ <layer name="Bridge" width="22" height="18">
+  <data encoding="base64" compression="zlib">
+   eJztzEEKgCAQQNG5ukXltsJ0W1J5TP8hRmrAD2/7Rf6fb/RNxr6l0ddCDgNGTJixKHxXbNgRcCAqfE9cyLjx4FX49npfVgFrrAzJ
+  </data>
+ </layer>
+ <layer name="Ojects" width="22" height="18">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2DwgjNAfJYG5t4B4rs0MHcUDE1gNNAOGCIAAHaFA4U=
+  </data>
+ </layer>
+</map>

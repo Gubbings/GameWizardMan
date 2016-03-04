@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="22" height="18" tilewidth="32" tileheight="32" nextobjectid="66">
+ <tileset firstgid="1" name="tileSet1" tilewidth="32" tileheight="32" tilecount="256" columns="16">
+  <image source="tileSet1.png" width="512" height="512"/>
+  <terraintypes>
+   <terrain name="Ground" tile="-1"/>
+  </terraintypes>
+ </tileset>
+ <tileset firstgid="257" name="tileSet2" tilewidth="32" tileheight="32" tilecount="256" columns="16">
+  <image source="tileSet2.png" width="512" height="512"/>
+ </tileset>
+ <tileset firstgid="513" name="tileSet3" tilewidth="32" tileheight="32" tilecount="128" columns="8">
+  <image source="tileSet3.png" width="256" height="512"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="22" height="18">
+  <data encoding="base64" compression="zlib">
+   eJzd1DkKwkAUxvHg0li6IE5I41JEsVIQtVRUtFfxBKIX8DTqCdQTqEfzG3gDj0cWMkxl8WMyCfnPJIQoz/MUGTFHMeca7B4fQugyPXZdWzIXKItzhuyOYcJMRZcLSNQ12Y1aO66rErohO9bPvKDWio023RzkoQBF2MIO9my06er3XoEq1GANGyGtK+nzTWhBGzpwgCu5wT2lG7WOT+MAhrRX3X2QJ7wsusYM5nT8hg8bvxm75rvSrT4JaL91IWvX7LvEuOzyuW037rswTnAWbPbnQtJ/4t+bLt7pD0KnO1Q=
+  </data>
+ </layer>
+ <layer name="Bridge" width="22" height="18">
+  <data encoding="base64" compression="zlib">
+   eJztzEEKgCAQQNG5ukXltsJ0W1J5TP8hRmrAD2/7Rf6fb/RNxr6l0ddCDgNGTJixKHxXbNgRcCAqfE9cyLjx4FX49npfVgFrrAzJ
+  </data>
+ </layer>
+ <layer name="Ojects" width="22" height="18">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFgwXMHmgHYAED7aYzQHwWh1wbBebeAeK7OOSm4dFHKDysmSAYG1hG2FkjGgxkWhvodE4poJf7AQ4dCTE=
+  </data>
+ </layer>
+ <objectgroup name="EnemyPath" visible="0">
+  <object id="30" x="192" y="64" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="0"/>
+    <property name="PathID" value="0"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="31" x="224" y="64" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="1"/>
+    <property name="PathID" value="0"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="33" x="224" y="192" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="2"/>
+    <property name="PathID" value="0"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="34" x="352" y="192" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="3"/>
+    <property name="PathID" value="0"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="35" x="352" y="256" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="4"/>
+    <property name="PathID" value="0"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="36" x="448" y="256" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="5"/>
+    <property name="PathID" value="0"/>
+   </properties>
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="EnemyPath2" visible="0">
+  <object id="55" x="192" y="544" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="0"/>
+    <property name="PathID" value="1"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="56" x="192" y="512" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="1"/>
+    <property name="PathID" value="1"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="57" x="224" y="512" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="2"/>
+    <property name="PathID" value="1"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="58" x="224" y="480" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="3"/>
+    <property name="PathID" value="1"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="59" x="256" y="480" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="4"/>
+    <property name="PathID" value="1"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="60" x="256" y="448" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="5"/>
+    <property name="PathID" value="1"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="61" x="288" y="448" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="6"/>
+    <property name="PathID" value="1"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="62" x="288" y="384" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="7"/>
+    <property name="PathID" value="1"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="63" x="416" y="384" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="8"/>
+    <property name="PathID" value="1"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="64" x="416" y="288" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="9"/>
+    <property name="PathID" value="1"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="65" x="448" y="288" width="32" height="32">
+   <properties>
+    <property name="NodeIndex" value="10"/>
+    <property name="PathID" value="1"/>
+   </properties>
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="NonBuildable" visible="0">
+  <object id="16" x="96" y="0" width="320" height="64"/>
+  <object id="17" x="544" y="160" width="160" height="256"/>
+  <object id="18" x="416" y="128" width="128" height="96"/>
+  <object id="19" x="544" y="32" width="160" height="128"/>
+  <object id="20" x="352" y="128" width="32" height="32"/>
+  <object id="21" x="128" y="192" width="32" height="32"/>
+  <object id="22" x="192" y="288" width="32" height="32"/>
+  <object id="23" x="160" y="416" width="32" height="32"/>
+  <object id="24" x="448" y="448" width="32" height="32"/>
+  <object id="25" x="576" y="512" width="32" height="32"/>
+ </objectgroup>
+</map>
