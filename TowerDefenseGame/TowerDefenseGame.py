@@ -141,8 +141,8 @@ def mainGameLoop():
     #group of tower sprites
     towerList = pygame.sprite.Group()
     Tower.Tower.groups = towerList
-    tower = Tower.Tower()  
     towerGif = pygame.image.load("Assets/towerTemp.gif")
+    tower = Tower.Tower(towerGif, (32, 32))  
     bg = pygame.Surface((32,32))
     bg.fill((0,0,0))
 
@@ -210,7 +210,6 @@ def mainGameLoop():
         towerList.clear(mainSurface, bg)
         towerList.draw(mainSurface)
         towerList.update(1)
-        mainSurface.blit(towerGif, (64, 64))
 
         #display the tile selection sprite
         mainSurface.blit(tileSelectSprite, (selectSpriteX * 32, selectSpriteY * 32))
