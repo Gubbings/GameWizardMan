@@ -1,6 +1,7 @@
-import CollectionsModule
 import pygame
 from pytmx.util_pygame import load_pygame
+import CollectionsModule
+import Tower
 
 #global variables
 clock = pygame.time.Clock()
@@ -107,9 +108,12 @@ def initGame():
 #   MAIN GAME LOOP
 #----------------------------------------------------------------------
 def mainGameLoop():    
-    #get the first connected joystick     
-    controller = pygame.joystick.Joystick(0)
-    controller.init()             
+
+    controller = None
+    if(pygame.joystick.get_count() > 0):
+        #get the first connected joystick     
+        controller = pygame.joystick.Joystick(0)   
+        #controller.init()             
 
     #black background
     mainSurface.fill(CollectionsModule.Color.black)
@@ -132,6 +136,17 @@ def mainGameLoop():
     #track the node the npc is moving towards
     nodeIndex = 1
         
+
+
+    #group of tower sprites
+    towerList = pygame.sprite.Group()
+    Tower.Tower.groups = towerList
+    tower = Tower.Tower()  
+    towerGif = pygame.image.load("Assets/towerTemp.gif")
+    bg = pygame.Surface((32,32))
+    bg.fill((0,0,0))
+
+
     #position of the tile selection sprite    
     selectSpriteX = 0
     selectSpriteY = 0
@@ -144,16 +159,18 @@ def mainGameLoop():
             xBound = x
         if(y > yBound):
             yBound = y
-    
+
+
     #create a new user event for tracking joystick movement
     JOYSTICK_MOVE_EVENT = pygame.USEREVENT+1
     t = 500
 
-    #cause a joystick move event every 500 milliseconds
-    pygame.time.set_timer(JOYSTICK_MOVE_EVENT, t)
+    if(controller != None):    
+        #cause a joystick move event every 500 milliseconds
+        pygame.time.set_timer(JOYSTICK_MOVE_EVENT, t)
 
     #game loop
-    while True:                      
+    while True:                                 
         for event in pygame.event.get():                        
             if event.type == pygame.QUIT: 
                 exit()
@@ -182,14 +199,18 @@ def mainGameLoop():
                     if(selectSpriteY < yBound):
                         selectSpriteY += 1
 
-               
         #display all of the tiles from the tiled map
         for layer in map1.layers:
             #we have marked object layers as invisible because they have no images 
             #only get the layers that are visible
             if layer.visible:
                 for x, y, image in layer.tiles():                
-                    mainSurface.blit(image, (32 * x, 32 * y))        
+                    mainSurface.blit(image, (32 * x, 32 * y))                  
+
+        towerList.clear(mainSurface, bg)
+        towerList.draw(mainSurface)
+        towerList.update(1)
+        mainSurface.blit(towerGif, (64, 64))
 
         #display the tile selection sprite
         mainSurface.blit(tileSelectSprite, (selectSpriteX * 32, selectSpriteY * 32))
@@ -226,8 +247,6 @@ def mainGameLoop():
         #update the display
         pygame.display.update()
         clock.tick(60)
-
-
 
 
 

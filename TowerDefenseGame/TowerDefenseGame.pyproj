@@ -25,10 +25,25 @@
     <Compile Include="CollectionsModule.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Tower.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TowerDefenseGame.py" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Maps\" />
+    <Folder Include="Assets\" />
+    <Folder Include="Assets\Fonts\" />
+    <Folder Include="Assets\Maps\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\Fonts\EdselFont.ttf" />
+    <Content Include="Assets\Maps\map1.tmx" />
+    <Content Include="Assets\Maps\map2.tmx" />
+    <Content Include="Assets\Maps\testMap.tmx" />
+    <Content Include="Assets\Maps\tileSet1.png" />
+    <Content Include="Assets\Maps\tileSet2.png" />
+    <Content Include="Assets\Maps\tileSet3.png" />
+    <Content Include="Assets\selectSprite.gif" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
