@@ -2,6 +2,7 @@ import pygame
 from pytmx.util_pygame import load_pygame
 import CollectionsModule
 import Tower
+import Bullet
 
 #global variables
 clock = pygame.time.Clock()
@@ -141,10 +142,15 @@ def mainGameLoop():
     #group of tower sprites
     towerList = pygame.sprite.Group()
     Tower.Tower.groups = towerList
+    bulletList = pygame.sprite.Group()
+    Bullet.Bullet.groups = bulletList
     towerGif = pygame.image.load("Assets/towerTemp.gif")
-    tower = Tower.Tower(towerGif, (32, 32))  
-    bg = pygame.Surface((32,32))
-    bg.fill((0,0,0))
+    tower = Tower.Tower(towerGif, (32, 32)) 
+    #towerBg possible unecessary GUY?! 
+    towerBg = pygame.Surface((32,32))
+    towerBg.fill((0,0,0))
+    bulletBg = pygame.Surface((4,10))
+    bulletBg.fill((0,0,0))
 
 
     #position of the tile selection sprite    
@@ -207,9 +213,12 @@ def mainGameLoop():
                 for x, y, image in layer.tiles():                
                     mainSurface.blit(image, (32 * x, 32 * y))                  
 
-        towerList.clear(mainSurface, bg)
+        towerList.clear(mainSurface, towerBg)
         towerList.draw(mainSurface)
         towerList.update(1)
+        #added for bullets to be drawn
+        bulletList.draw(mainSurface)
+        bulletList.update()
 
         #display the tile selection sprite
         mainSurface.blit(tileSelectSprite, (selectSpriteX * 32, selectSpriteY * 32))
