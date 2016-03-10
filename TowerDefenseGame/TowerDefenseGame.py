@@ -195,7 +195,8 @@ def mainGameLoop():
             #check if user clicked the 'A' button
             if event.type == pygame.JOYBUTTONDOWN:
                 if controller.get_button(0):                    
-                    Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32), None)
+                    #TODO: tower targets is currently hard coded we will base it on proximity in the future
+                    Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32), enemy)
 
             #read joystick position for a joystick move event
             if event.type == JOYSTICK_MOVE_EVENT:                

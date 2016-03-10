@@ -9,6 +9,7 @@ class Tower(pygame.sprite.Sprite):
     fireRate = 10
     bulletTick = 0 
     target = None
+    bullets = []
 
     def __init__(self, image, pos, target):
         pygame.sprite.Sprite.__init__(self, self.groups)
@@ -30,8 +31,11 @@ class Tower(pygame.sprite.Sprite):
                 bullet.rect.x = self.rect.x
                 bullet.rect.y = self.rect.y
                 self.bulletTick = 0
+                self.bullets.append(bullet)
             self.bulletTick = self.bulletTick + 1
-
+        else:
+            for bullet in self.bullets:
+                bullet.target = None
         
         
 

@@ -5,7 +5,7 @@ import pygame
 class Enemy(pygame.sprite.Sprite):
     
     #data members for an enemy
-    health = 2
+    health = 10
     pos = [0,0]
     nodes = []
     nodeIndex = 1
@@ -30,9 +30,10 @@ class Enemy(pygame.sprite.Sprite):
            self.health -= 1
         
         #kill the enemy when its health is 0 
-        if(self.health <= 0):
+        if(self.health <= 0):                        
             for tower in self.towerGroup:
-                tower.target = None
+                if(tower.target == self):
+                    tower.target = None
             self.kill()
         
         nodes = self.nodes        
