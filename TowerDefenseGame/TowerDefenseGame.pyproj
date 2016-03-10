@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{b0abd50b-0875-44b3-9cda-fa093c78263b}</ProjectGuid>
+    <ProjectGuid>{0f49099d-a497-4539-b501-08e0c288d484}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>TowerDefenseGame.py</StartupFile>
     <SearchPath>
@@ -26,6 +26,9 @@
     <Compile Include="CollectionsModule.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Enemy.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Tower.py">
       <SubType>Code</SubType>
     </Compile>
@@ -35,6 +38,7 @@
     <Folder Include="Assets\" />
     <Folder Include="Assets\Fonts\" />
     <Folder Include="Assets\Maps\" />
+    <Folder Include="Assets\Sprites\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Fonts\EdselFont.ttf" />
@@ -45,6 +49,7 @@
     <Content Include="Assets\Maps\tileSet2.png" />
     <Content Include="Assets\Maps\tileSet3.png" />
     <Content Include="Assets\selectSprite.gif" />
+    <Content Include="Assets\Sprites\towerTemp.gif" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

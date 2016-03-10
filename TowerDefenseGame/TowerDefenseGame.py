@@ -3,18 +3,19 @@ from pytmx.util_pygame import load_pygame
 import CollectionsModule
 import Tower
 import Bullet
+import Enemy
 
 #global variables
 clock = pygame.time.Clock()
-screenWidth = 800
-screenHeight = 700
+screenWidth = 700
+screenHeight = 575
 screenSize = screenWidth, screenHeight
-mainSurface = pygame.display.set_mode(screenSize, pygame.RESIZABLE)
+mainSurface = pygame.display.set_mode(screenSize)
 tileSelectSprite = pygame.image.load("Assets/selectSprite.gif")
 
 
 #maps
-map1 = load_pygame('Assets/Maps/testMap.tmx')
+map1 = load_pygame("Assets/Maps/testMap.tmx")
 
 #function used for primary initialization 
 def mainInit():
@@ -93,7 +94,9 @@ def initGame():
         button("Play", screenWidth / 2 - 50, 350, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red, mainGameLoop)
         button("Tutorial", screenWidth / 2 - 50, 425, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red)
         button("Settings", screenWidth / 2 - 50, 500, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red)
-        button("Quit", screenWidth / 2 - 50, 575, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red, exit)
+        
+        #no longer needed
+        #button("Quit", screenWidth / 2 - 50, 575, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red, exit)
         
         #update entire display 
         pygame.display.flip()
@@ -114,7 +117,7 @@ def mainGameLoop():
     if(pygame.joystick.get_count() > 0):
         #get the first connected joystick     
         controller = pygame.joystick.Joystick(0)   
-        #controller.init()             
+        controller.init()             
 
     #black background
     mainSurface.fill(CollectionsModule.Color.black)
@@ -128,58 +131,71 @@ def mainGameLoop():
     for node in path:
         nodes.append(node)
 
+    #sort the list of path nodes
     nodes.sort()
 
-    #the npc must start at the first node
-    npcX = nodes[0].x
-    npcY = nodes[0].y
-    
-    #track the node the npc is moving towards
-    nodeIndex = 1
-        
 
 
     #group of tower sprites
     towerList = pygame.sprite.Group()
-    Tower.Tower.groups = towerList
+    Tower.Tower.groups = towerList   
+
+    #group of bullet sprites
     bulletList = pygame.sprite.Group()
     Bullet.Bullet.groups = bulletList
-    towerGif = pygame.image.load("Assets/towerTemp.gif")
-    tower = Tower.Tower(towerGif, (32, 32)) 
-    #towerBg possible unecessary GUY?! 
-    towerBg = pygame.Surface((32,32))
-    towerBg.fill((0,0,0))
-    bulletBg = pygame.Surface((4,10))
-    bulletBg.fill((0,0,0))
+        
+    #group of enemy sprites
+    enemyList = pygame.sprite.Group()
+    Enemy.Enemy.groups = enemyList
+    Enemy.Enemy.towerGroup = towerList
+    Enemy.Enemy.bulletGroup = bulletList
 
 
-    #position of the tile selection sprite    
-    selectSpriteX = 0
-    selectSpriteY = 0
-
-    #get the bounds of the tiled map
-    xBound = 0
-    yBound = 0
-    for x, y, image in map1.layers[0].tiles():                
-        if(x > xBound):
-            xBound = x
-        if(y > yBound):
-            yBound = y
+    #create an enemy
+    enemyGif = pygame.transform.scale(pygame.image.load("Assets/Sprites/enemy1.png"), (32,32))    
+    enemy = Enemy.Enemy(nodes, enemyGif)
+    
+    #create a tower
+    towerGif = pygame.image.load("Assets/Sprites/towerTemp.gif")
+    tower = Tower.Tower(towerGif, (32, 32), enemy)    
+    
+           
 
 
-    #create a new user event for tracking joystick movement
-    JOYSTICK_MOVE_EVENT = pygame.USEREVENT+1
-    t = 500
-
+    #check if we have a controller before performing anything that pertains to the controller
     if(controller != None):    
-        #cause a joystick move event every 500 milliseconds
-        pygame.time.set_timer(JOYSTICK_MOVE_EVENT, t)
+        #position of the tile selection sprite    
+        selectSpriteX = 0
+        selectSpriteY = 0
+
+        #get the bounds of the tiled map
+        xBound = 0
+        yBound = 0
+        for x, y, image in map1.layers[0].tiles():                
+            if(x > xBound):
+                xBound = x
+            if(y > yBound):
+                yBound = y
+
+        #create a new user event for tracking joystick movement
+        JOYSTICK_MOVE_EVENT = pygame.USEREVENT+1
+        timeBetweenEvents = 250
+
+        #cause a joystick move event every 't' milliseconds where 't' is defined as timeBetweenEvents
+        pygame.time.set_timer(JOYSTICK_MOVE_EVENT, timeBetweenEvents)
 
     #game loop
-    while True:                                 
+    while True:
+
+        #check for pygame events                                      
         for event in pygame.event.get():                        
             if event.type == pygame.QUIT: 
                 exit()
+
+            #check if user clicked the 'A' button
+            if event.type == pygame.JOYBUTTONDOWN:
+                if controller.get_button(0):                    
+                    Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32), None)
 
             #read joystick position for a joystick move event
             if event.type == JOYSTICK_MOVE_EVENT:                
@@ -213,45 +229,22 @@ def mainGameLoop():
                 for x, y, image in layer.tiles():                
                     mainSurface.blit(image, (32 * x, 32 * y))                  
 
-        towerList.clear(mainSurface, towerBg)
-        towerList.draw(mainSurface)
-        towerList.update(1)
-        #added for bullets to be drawn
-        bulletList.draw(mainSurface)
+        #update tower sprites
+        towerList.update()
+        towerList.draw(mainSurface)        
+        
+        #update bullet sprites
         bulletList.update()
+        bulletList.draw(mainSurface)
+        
+        #update the enemy sprites
+        enemyList.update()
+        enemyList.draw(mainSurface)
+        
 
         #display the tile selection sprite
         mainSurface.blit(tileSelectSprite, (selectSpriteX * 32, selectSpriteY * 32))
-
                 
-        #draw the npc
-        npc = pygame.draw.rect(mainSurface, CollectionsModule.Color.red, (npcX, npcY, 32, 32))
-
-        #check the npcs position relative to its next node
-        if (nodeIndex < len(nodes)) and (npc.x != nodes[nodeIndex].x or npc.y != nodes[nodeIndex].y):            
-            #move the npc towards the next node - up/down/left/right
-            if (npcX < nodes[nodeIndex].x): 
-                npcX += 1
-            elif (npcX > nodes[nodeIndex].x):
-                npcX -= 1
-            elif (npcY < nodes[nodeIndex].y):
-                npcY += 1
-            else:
-                npcY -= 1 
-        else:
-            nodeIndex += 1
-
-
-
-#        pygame.draw.rect(mainSurface, CollectionsModule.Color.red, (nodes[nodeIndex].x, nodes[nodeIndex].y, 32, 32))
-#        if pygame.time.get_ticks() > 1000 * nodeIndex and nodeIndex < len(nodes) - 1:
-#            nodeIndex += 1
-
-
-#        for node in nodes:
-#            print(node.properties["NodeIndex"])
-
-
         #update the display
         pygame.display.update()
         clock.tick(60)
@@ -259,5 +252,5 @@ def mainGameLoop():
 
 
 
-#call the first initialization function
+#call the main initialization function to start running the game
 mainInit()
