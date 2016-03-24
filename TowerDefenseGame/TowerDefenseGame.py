@@ -1,3 +1,9 @@
+#Authors: Guy Coccimiglio, William Sigouin, Michael Thomas, Justin Rhude
+#Game Software Engineering - Final Project - Tower Defense Game
+#Prototype Version: 2.0
+#Description: This python file controls initialization and all game logic
+#   including rendering the game, controls and AI  
+
 import pygame
 from pytmx.util_pygame import load_pygame
 import CollectionsModule
@@ -5,19 +11,25 @@ import Tower
 import Bullet
 import Enemy
 
-#global variables
+#clock for controlling the FPS
 clock = pygame.time.Clock()
-screenWidth = 700
+
+#screen parameters
+playableWidth = 700
+screenWidth = 850
 screenHeight = 575
 screenSize = screenWidth, screenHeight
 mainSurface = pygame.display.set_mode(screenSize)
+
+#image for the tile selection sprite
 tileSelectSprite = pygame.image.load("Assets/selectSprite.gif")
 
-
-#maps
+#tiled map
 map1 = load_pygame("Assets/Maps/testMap.tmx")
 
-#function used for primary initialization 
+
+#function used for primary initialization of pygame and background color
+#this is used as the entry point into the game logic
 def mainInit():
     #initialize pygame
     pygame.init()
@@ -95,7 +107,7 @@ def initGame():
         button("Tutorial", screenWidth / 2 - 50, 425, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red)
         button("Settings", screenWidth / 2 - 50, 500, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red)
         
-        #no longer needed
+        #no longer needed - we might add the quit button back at a later time
         #button("Quit", screenWidth / 2 - 50, 575, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red, exit)
         
         #update entire display 
@@ -110,6 +122,7 @@ def initGame():
 
 #----------------------------------------------------------------------
 #   MAIN GAME LOOP
+#   Controls AI, rendering and joystick controls 
 #----------------------------------------------------------------------
 def mainGameLoop():    
 
@@ -135,6 +148,12 @@ def mainGameLoop():
     nodes.sort()
 
 
+    #get the object group with that marks the buildable surface area
+    buildableArea = map1.get_layer_by_name("Buildable")
+    buildableList = []
+    for area in buildableArea:
+        buildableList.append(area)
+
 
     #group of tower sprites
     towerList = pygame.sprite.Group()
@@ -159,26 +178,24 @@ def mainGameLoop():
     towerGif = pygame.image.load("Assets/Sprites/towerTemp.gif")
     tower = Tower.Tower(towerGif, (32, 32), enemy)    
     
-           
-
+    #position of the tile selection sprite    
+    selectSpriteX = 0
+    selectSpriteY = 0
+    #create a new user event for tracking joystick movement        
+    JOYSTICK_MOVE_EVENT = pygame.USEREVENT+1
 
     #check if we have a controller before performing anything that pertains to the controller
-    if(controller != None):    
-        #position of the tile selection sprite    
-        selectSpriteX = 0
-        selectSpriteY = 0
-
+    if(controller != None):            
         #get the bounds of the tiled map
-        xBound = 0
-        yBound = 0
+        xBound = playableWidth
+        yBound = screenHeight
         for x, y, image in map1.layers[0].tiles():                
             if(x > xBound):
                 xBound = x
             if(y > yBound):
                 yBound = y
 
-        #create a new user event for tracking joystick movement
-        JOYSTICK_MOVE_EVENT = pygame.USEREVENT+1
+        #time between JOYSTICK_MOVE_EVENTs
         timeBetweenEvents = 250
 
         #cause a joystick move event every 't' milliseconds where 't' is defined as timeBetweenEvents
@@ -196,7 +213,13 @@ def mainGameLoop():
             if event.type == pygame.JOYBUTTONDOWN:
                 if controller.get_button(0):                    
                     #TODO: tower targets is currently hard coded we will base it on proximity in the future
-                    Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32), enemy)
+                    #TODO: make towers cost resources
+                    for area in buildableList:
+                        #make sure the selection is horizontally and vertically in a buildable area
+                        if(selectSpriteX * 32 > area.x and selectSpriteX * 32 < area.width):
+                            if(selectSpriteY * 32 > area.y and selectSpriteY * 32 < area.height):
+                                #spawn a new tower
+                                Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32), enemy)
 
             #read joystick position for a joystick move event
             if event.type == JOYSTICK_MOVE_EVENT:                

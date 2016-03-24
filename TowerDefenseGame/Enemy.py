@@ -5,7 +5,7 @@ import pygame
 class Enemy(pygame.sprite.Sprite):
     
     #data members for an enemy
-    health = 10
+    health = 100
     pos = [0,0]
     nodes = []
     nodeIndex = 1
