@@ -1,15 +1,9 @@
 import pygame
 import Bullet
-
+import Player
 
 #This is the base class for all towers in the game it extends pygame's sprite class
 class Tower(pygame.sprite.Sprite):
-
-    pos = (-100, -100)   
-    fireRate = 10
-    bulletTick = 0 
-    target = None
-    bullets = []
 
     def __init__(self, image, pos, target):
         pygame.sprite.Sprite.__init__(self, self.groups)
@@ -17,9 +11,12 @@ class Tower(pygame.sprite.Sprite):
         self.image = image  
         self.rect = self.image.get_rect()
         self.radius = 32
+        self.bullets = []
         self.fireRate = 60
         self.bulletTick = 0
+        self.cost = 5
         self.target = target
+        Player.gold -= self.cost
 
     #update method runs every time the sprite group calls update
     def update(self):
@@ -35,8 +32,4 @@ class Tower(pygame.sprite.Sprite):
             self.bulletTick = self.bulletTick + 1
         else:
             for bullet in self.bullets:
-                bullet.target = None
-        
-        
-
-
+                bullet.target = None      

@@ -1,42 +1,69 @@
 import pygame
+import Player
 
 #this class represents a single enemy in the game. It inherits from the pygame
 #Sprite object and includes parameters for pathfinding and collision
 class Enemy(pygame.sprite.Sprite):
     
-    #data members for an enemy
-    health = 100
-    pos = [0,0]
-    nodes = []
-    nodeIndex = 1
+    #data members for an enemy   
     bulletGroup = None
     towerGroup = None
-         
-    def __init__(self, nodesInPath, image):
+        
+    def __init__(self, nodesInPath, image, playerBase):
         pygame.sprite.Sprite.__init__(self, self.groups)        
-        self.image = image  
-        self.rect = self.image.get_rect()
+        
+        #position of the sprite [x,y]
+        self.pos = []
+
+        #enemy health
+        self.health = 100
+
+        #next node to advance to
+        self.nodeIndex = 0
+        
+        #desired final position of the enemy
+        self.playerBase = playerBase
+
+        #amount of health taken when the enemy reaches the base
+        self.damage = -2
+
+        #radius used for collision
         self.radius = 32
-        self.nodes = nodesInPath
-        self.pos[0] = nodesInPath[0].x
-        self.pos[1] = nodesInPath[0].y
+        self.image = image  
+        self.rect = self.image.get_rect()        
+
+        #nodes used for pathfinding
+        self.nodeList = nodesInPath       
+        self.pos.append(nodesInPath[0].x)
+        self.pos.append(nodesInPath[0].y)
         self.rect.topleft = self.pos     
     
     #update method runs every time the sprite group calls update
     def update(self):
-
+                
         #check if a bullet has collided with the enemy
         if(pygame.sprite.spritecollide(self, self.bulletGroup, 1)):
            self.health -= 1
         
-        #kill the enemy when its health is 0 
+        #check if the enemy reached the player base
+        if(self.pos[0] + 2 >= self.playerBase.x and self.pos[0] + 2 <= self.playerBase.x + self.playerBase.width):
+            if(self.pos[1] + 2 >= self.playerBase.y and self.pos[1] + 2 <= self.playerBase.y + self.playerBase.height):
+                #reduce player health when the enemy reaches the base
+                Player.changeHealth(self.damage)                
+
+                #kill the enemy - this allows reuse of removing the enemy from tower targets
+                self.health = -1
+        
+
+        #kill the enemy when its health is 0 or less
         if(self.health <= 0):                        
             for tower in self.towerGroup:
                 if(tower.target == self):
                     tower.target = None
             self.kill()
-        
-        nodes = self.nodes        
+
+
+        nodes = self.nodeList        
         #check the npcs position relative to its next node
         if (self.nodeIndex < len(nodes)) and (self.pos[0] != nodes[self.nodeIndex].x or self.pos[1] != nodes[self.nodeIndex].y):            
             #move the npc towards the next node - up/down/left/right
@@ -50,8 +77,5 @@ class Enemy(pygame.sprite.Sprite):
                 self.pos[1] -= 1 
         else:
             self.nodeIndex += 1
-
-
+        
         self.rect.topleft = self.pos
-
-

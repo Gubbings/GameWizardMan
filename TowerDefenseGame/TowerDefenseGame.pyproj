@@ -29,6 +29,9 @@
     <Compile Include="Enemy.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Player.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Tower.py">
       <SubType>Code</SubType>
     </Compile>
@@ -36,8 +39,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\" />
+    <Folder Include="Assets\Audio\Music\" />
+    <Folder Include="Assets\Audio\SoundEffects\" />
     <Folder Include="Assets\Fonts\" />
     <Folder Include="Assets\Maps\" />
+    <Folder Include="Assets\Audio\" />
     <Folder Include="Assets\Sprites\" />
   </ItemGroup>
   <ItemGroup>

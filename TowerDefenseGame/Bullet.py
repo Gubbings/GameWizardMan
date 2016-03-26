@@ -4,11 +4,6 @@ import CollectionsModule
 #basic class for bullets to be shot; possibly extendable for different bullet types
 class Bullet(pygame.sprite.Sprite):
 
-    #data members for bullets
-    target = None
-    distanceX = 0
-    distanceY = 0
-
     #constructor
     def __init__(self, target, distanceX, distanceY):
         pygame.sprite.Sprite.__init__(self, self.groups)
@@ -16,7 +11,7 @@ class Bullet(pygame.sprite.Sprite):
         self.image = pygame.image.load("Assets/Sprites/arrow.gif")
         self.target = target        
         self.distanceX = abs(distanceX)
-        self.distanceY = abs(distanceY)
+        self.distanceY = abs(distanceY)        
         self.rect = self.image.get_rect()
 
             
@@ -38,9 +33,3 @@ class Bullet(pygame.sprite.Sprite):
                 self.rect.y += 4
             elif(self.rect.y > target.rect.centery):                        
                 self.rect.y -= 4
-        
-        '''
-        if(pygame.sprite.collide_rect(self, target)):
-            self.kill()
-            target.image.fill((255,0,0))
-        ''' 

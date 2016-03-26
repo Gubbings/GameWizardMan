@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="22" height="18" tilewidth="32" tileheight="32" nextobjectid="114">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="28" height="18" tilewidth="32" tileheight="32" nextobjectid="116">
  <tileset firstgid="1" name="tileSet1" tilewidth="32" tileheight="32" tilecount="256" columns="16">
   <image source="tileSet1.png" width="512" height="512"/>
   <terraintypes>
@@ -12,19 +12,19 @@
  <tileset firstgid="513" name="tileSet3" tilewidth="32" tileheight="32" tilecount="128" columns="8">
   <image source="tileSet3.png" width="256" height="512"/>
  </tileset>
- <layer name="Tile Layer 1" width="22" height="18">
+ <layer name="Tile Layer 1" width="28" height="18">
   <data encoding="base64" compression="zlib">
-   eJzd1DkKwkAUxvHg0li6IE5I41JEsVIQtVRUtFfxBKIX8DTqCdQTqEfzG3gDj0cWMkxl8WMyCfnPJIQoz/MUGTFHMeca7B4fQugyPXZdWzIXKItzhuyOYcJMRZcLSNQ12Y1aO66rErohO9bPvKDWio023RzkoQBF2MIO9my06er3XoEq1GANGyGtK+nzTWhBGzpwgCu5wT2lG7WOT+MAhrRX3X2QJ7wsusYM5nT8hg8bvxm75rvSrT4JaL91IWvX7LvEuOzyuW037rswTnAWbPbnQtJ/4t+bLt7pD0KnO1Q=
+   eJyt1EkOAUEUxvGKYWNpjJbeGBaIFYlgSRDWhjiBcAGnwQlwAhzNV8mr5OWp7kSpTn6p7pL2V6UJlFIB6TN7cc2V2T0VaEKLacNKfR8rdp82Y06QFXOG7A1gyIygaOkp0eNCYntN9myf6deeadrmm+xc792UGnM2+uwlIAkpSMMaNrBlo+7tPPX095qDPBRgAUvBtSfp+SrUoA4Net8zucDVcT9t/QqNXejR2nTvRu7w8NgzxjCh8ye82Pj21DPPv250SEjrKwm+emadGSaqZ2u69vi1717Uc2oc4Cj8s59Rv8M4rr24/1HfPdeWS++flmvPtRVEtPTxAfFjPj4=
   </data>
  </layer>
- <layer name="Bridge" width="22" height="18">
+ <layer name="Bridge" width="28" height="18">
   <data encoding="base64" compression="zlib">
-   eJztzEEKgCAQQNG5ukXltsJ0W1J5TP8hRmrAD2/7Rf6fb/RNxr6l0ddCDgNGTJixKHxXbNgRcCAqfE9cyLjx4FX49npfVgFrrAzJ
+   eJztzTsOQFAURVEVZsAIME3Ep0V8WsRnmHaiu4XqXcXLO8kqTrU9T2c+AiE03GjFj4TYcG+xvHf/3JOzoZejQIkKNRrFXoceA0ZMmBV7KzbsOHDiUux9zfVcz/XeJUiFDA8iIhUd
   </data>
  </layer>
- <layer name="Ojects" width="22" height="18">
+ <layer name="Ojects" width="28" height="18">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFgwXMHmgHYAED7aYzQHwWh1wbBebeAeK7OOSm4dFHKDysmSAYG1hG2FkjGgxkWhvodE4poJf7AQ4dCTE=
+   eJxjYBgFIwXMHmgHUAEMVj+cAeKzOOTaaGDfHSC+i0NuGhnmEQpXayYIxgaWkWHfKKAeGIx5YjC6iZZgsPoXAPmuCTE=
   </data>
  </layer>
  <objectgroup name="EnemyPath" visible="0">
@@ -150,17 +150,8 @@
    <ellipse/>
   </object>
  </objectgroup>
- <objectgroup name="NonBuildable" visible="0">
-  <object id="16" x="96" y="0" width="320" height="64"/>
-  <object id="17" x="544" y="160" width="160" height="256"/>
-  <object id="18" x="416" y="128" width="128" height="96"/>
-  <object id="19" x="544" y="32" width="160" height="128"/>
-  <object id="20" x="352" y="128" width="32" height="32"/>
-  <object id="21" x="128" y="192" width="32" height="32"/>
-  <object id="22" x="192" y="288" width="32" height="32"/>
-  <object id="23" x="160" y="416" width="32" height="32"/>
-  <object id="24" x="448" y="448" width="32" height="32"/>
-  <object id="25" x="576" y="512" width="32" height="32"/>
+ <objectgroup name="Base" visible="0">
+  <object id="115" x="448" y="224" width="64" height="96"/>
  </objectgroup>
  <objectgroup name="Buildable" visible="0">
   <object id="68" x="96" y="64" width="96" height="32"/>
