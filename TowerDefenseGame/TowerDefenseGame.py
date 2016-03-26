@@ -2,7 +2,7 @@
 #Game Software Engineering - Final Project - Tower Defense Game
 #Prototype Version: 2.0
 #Description: This python file controls initialization and all game logic
-#   including rendering the game, controls and AI
+#   including rendering the game, controls and AI  
 
 import pygame
 from pytmx.util_pygame import load_pygame
@@ -38,7 +38,7 @@ def mainInit():
     #initialize pygame
     pygame.init()
     pygame.joystick.init()
-
+          
     #set the background color
     backgroundColor = 66, 61, 60
     mainSurface.fill(backgroundColor)
@@ -75,20 +75,20 @@ def button(msg, x, y, width, height, normalColor, hoverColor, callbackFunction =
     else:
         #change button back the normal color
         pygame.draw.rect(mainSurface, normalColor, (x, y, width, height))
-
-
-    #if the button has text display it
+    
+   
+    #if the button has text display it     
     if msg != "":
         smallText = pygame.font.Font("Assets/Fonts/EdselFont.ttf", 20)
         textSurf = text_objects(msg, smallText, CollectionsModule.Color.black)
         textRect = textSurf.get_rect()
         textRect.center = ((x + (width / 2)), (y + (height / 2)))
         mainSurface.blit(textSurf, textRect)
+        
 
 
-
-
-#setup pygame window and main menu
+        
+#setup pygame window and main menu   
 def initGame():
     pygame.display.set_caption("Labyrinth Thief")
 
@@ -96,46 +96,46 @@ def initGame():
     logo = pygame.image.load("GameLogo.gif")
     logoRect = logo.get_rect()
     logoPos = (screenWidth / 2) - (logoRect.size[0]/2), (screenHeight / 4) - (logoRect.size[1]/2)
-
+       
     #game loop using while the menu is active
-    while True:
+    while True: 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT: 
                 exit()
 
         #add the logo to the window
         mainSurface.blit(logo, logoPos)
-
+     
         #rectangles that will be used for buttons - some are placeholders
         button("Play", screenWidth / 2 - 50, 350, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red, mainGameLoop)
         button("Tutorial", screenWidth / 2 - 50, 425, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red)
         button("Settings", screenWidth / 2 - 50, 500, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red)
-
+        
         #no longer needed - we might add the quit button back at a later time
         #button("Quit", screenWidth / 2 - 50, 575, 100, 50, CollectionsModule.Color.white, CollectionsModule.Color.red, exit)
-
-        #update entire display
+        
+        #update entire display 
         pygame.display.flip()
 
         #60fps or lower
         clock.tick(60)
 
-
+    
 
 #----------------------------------------------------------------------
 #   MAIN GAME LOOP
-#   Controls AI, rendering and joystick controls
+#   Controls AI, rendering and joystick controls 
 #----------------------------------------------------------------------
-def mainGameLoop():
+def mainGameLoop():   
     #delay for 100 milliseconds so the user doesnt place a tower with the click from hitting play
     pygame.time.delay(100)
 
     #configure the gamepad controller if one is connected
     controller = None
     if(pygame.joystick.get_count() > 0):
-        #get the first connected joystick
-        controller = pygame.joystick.Joystick(0)
-        controller.init()
+        #get the first connected joystick     
+        controller = pygame.joystick.Joystick(0)   
+        controller.init()             
 
     #black background
     mainSurface.fill(CollectionsModule.Color.black)
@@ -164,9 +164,9 @@ def mainGameLoop():
     nodes2.sort
 
     #get the object group with that marks the buildable surface area
-    buildableArea = map1.get_layer_by_name("Buildable")
+    buildableArea = map1.get_layer_by_name("Buildable")    
     buildableList = []
-    for area in buildableArea:
+    for area in buildableArea:        
         buildableList.append(area)
 
     #get the object group that marks the players base camp
@@ -181,7 +181,7 @@ def mainGameLoop():
     #group of tower sprites
     towerList = pygame.sprite.Group()
     #group of bullet sprites
-    bulletList = pygame.sprite.Group()
+    bulletList = pygame.sprite.Group()       
     #group of enemy sprites
     enemyList = pygame.sprite.Group()
 
@@ -193,26 +193,26 @@ def mainGameLoop():
     Enemy.Enemy.bulletGroup = bulletList
 
     Tower.Tower.groups = towerList
-    Tower.Tower.enemyGroup = enemyList
+    Tower.Tower.enemyGroup = enemyList   
 
+    
 
-
-    #variables for controlling spawn rate of enemies
+    #variables for controlling spawn rate of enemies 
     enemyCount = 0
     spawnTick = 0
     spawnRate = 180
 
     #create an enemy
-    enemyGif = pygame.transform.scale(pygame.image.load("Assets/Sprites/enemy1.png"), (32,32))
+    enemyGif = pygame.transform.scale(pygame.image.load("Assets/Sprites/enemy1.png"), (32,32))    
     enemy = Enemy.Enemy(nodes, enemyGif, playerBase)
-
+    
     #create a tower
-    towerGif = pygame.image.load("Assets/Sprites/towerTemp.gif")
-
-    #position of the tile selection sprite
+    towerGif = pygame.image.load("Assets/Sprites/towerTemp.gif")    
+    
+    #position of the tile selection sprite    
     selectSpriteX = 0
     selectSpriteY = 0
-    #create a new user event for tracking joystick movement
+    #create a new user event for tracking joystick movement        
     JOYSTICK_MOVE_EVENT = pygame.USEREVENT + 1
 
     #click event
@@ -221,11 +221,11 @@ def mainGameLoop():
     pygame.time.set_timer(MOUSE_CLICK_EVENT, 100)
 
     #check if we have a controller before performing anything that pertains to the controller
-    if(controller != None):
+    if(controller != None):            
         #get the bounds of the tiled map
         xBound = playableWidth
         yBound = screenHeight
-
+        
         #time between JOYSTICK_MOVE_EVENTs
         timeBetweenEvents = 250
 
@@ -238,45 +238,45 @@ def mainGameLoop():
 
     #game loop
     while True:
-        #check for pygame events
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        #check for pygame events                                      
+        for event in pygame.event.get():                        
+            if event.type == pygame.QUIT: 
                 exit()
 
             #read joystick position for a joystick move event
-            if event.type == JOYSTICK_MOVE_EVENT:
-
+            if event.type == JOYSTICK_MOVE_EVENT:                
+                                               
                 #position of the joystick axis
-                h_axis = controller.get_axis(0)
+                h_axis = controller.get_axis(0)        
                 v_axis = controller.get_axis(1)
                 deadZone = 0.5
 
                 #check if user is moving the joystick horizontally
-                if(h_axis < -deadZone):
+                if(h_axis < -deadZone):            
                     if(selectSpriteX > 0):
-                        selectSpriteX -= 1
+                        selectSpriteX -= 1                                
                 elif(h_axis > deadZone):
                     if(selectSpriteX < xBound):
                         selectSpriteX += 1
-
+                
                 #check if user is moving the joystick vertically
                 if(v_axis < -deadZone):
                     if(selectSpriteY > 0):
-                        selectSpriteY -= 1
+                        selectSpriteY -= 1                
                 elif(v_axis > deadZone):
                     if(selectSpriteY < yBound):
                         selectSpriteY += 1
 
-            if event.type == MOUSE_CLICK_EVENT:
+            if event.type == MOUSE_CLICK_EVENT:                
                 #mouse position
                 mouse = pygame.mouse.get_pos()
 
                 #get state of the left mouse button
                 leftMouseDown = pygame.mouse.get_pressed()[0] == 1
-
+                
                 #dont update selection sprite when the mouse is out of playable area
                 if(not outOfBounds):
-                    selectSpriteX = int(mouse[0] / 32)
+                    selectSpriteX = int(mouse[0] / 32)                
                     selectSpriteY = int(mouse[1] / 32)
 
                 if(mouse[0] > playableWidth):
@@ -284,15 +284,15 @@ def mainGameLoop():
                     outOfBounds = True
                 else:
                     outOfBounds = False
-
+                
                 #if user clicks attempt to place a tower
                 if(leftMouseDown):
                     #check if user is placing a tower
                     if(not outOfBounds):
-                        for area in buildableList:
+                        for area in buildableList:                        
                             #make sure the selection is horizontally and vertically in a buildable area
                             if(selectSpriteX * 32 + 2 > area.x and selectSpriteX * 32 + 2< area.x + area.width):
-                                if(selectSpriteY * 32 + 2 > area.y and selectSpriteY * 32 + 2 < area.y + area.height):
+                                if(selectSpriteY * 32 + 2 > area.y and selectSpriteY * 32 + 2 < area.y + area.height):                            
                                     #make sure there is not a tower already in the selected spot
                                     if(len(towerList) > 0):
                                         for tower in towerList:
@@ -303,7 +303,7 @@ def mainGameLoop():
                                                     Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32))
                                                     print("tower")
                                                     break
-                                    else:
+                                    else:                                        
                                         Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32))
                                         print("tower")
                                         break
@@ -311,14 +311,14 @@ def mainGameLoop():
 
             #check if user clicked the 'A' button
             if event.type == pygame.JOYBUTTONDOWN:
-                if controller.get_button(0):
-                    #TODO: tower targets is currently hard coded we will base it on proximity in the future
+                if controller.get_button(0):                                        
+                    #TODO: tower targets is currently hard coded we will base it on proximity in the future                                  
                     #check if user is placing a tower
                     if(not outOfBounds):
-                        for area in buildableList:
+                        for area in buildableList:                        
                             #make sure the selection is horizontally and vertically in a buildable area
                             if(selectSpriteX * 32 + 2 > area.x and selectSpriteX * 32 + 2< area.x + area.width):
-                                if(selectSpriteY * 32 + 2 > area.y and selectSpriteY * 32 + 2 < area.y + area.height):
+                                if(selectSpriteY * 32 + 2 > area.y and selectSpriteY * 32 + 2 < area.y + area.height):                            
                                     #make sure there is not a tower already in the selected spot
                                     if(len(towerList) > 0):
                                         for tower in towerList:
@@ -329,7 +329,7 @@ def mainGameLoop():
                                                     Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32))
                                                     print("tower")
                                                     break
-                                    else:
+                                    else:                                        
                                         Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32))
                                         print("tower")
                                         break
@@ -337,11 +337,11 @@ def mainGameLoop():
 
         #display all of the tiles from the tiled map
         for layer in map1.layers:
-            #we have marked object layers as invisible because they have no images
+            #we have marked object layers as invisible because they have no images 
             #only get the layers that are visible
             if layer.visible:
-                for x, y, image in layer.tiles():
-                    mainSurface.blit(image, (32 * x, 32 * y))
+                for x, y, image in layer.tiles():                
+                    mainSurface.blit(image, (32 * x, 32 * y))                  
 
         #spawn new enemies based on the spawn rate
         if(spawnTick >= spawnRate):
@@ -353,25 +353,25 @@ def mainGameLoop():
                 Enemy.Enemy(nodes2, enemyGif, playerBase)
                 enemyCount += 1
 
-            spawnTick = 0
+            spawnTick = 0       
         spawnTick = spawnTick + 1
 
 
         #update tower sprites
         towerList.update()
-        towerList.draw(mainSurface)
-
+        towerList.draw(mainSurface)        
+        
         #update bullet sprites
         bulletList.update()
         bulletList.draw(mainSurface)
-
+        
         #update the enemy sprites
         enemyList.update()
         enemyList.draw(mainSurface)
-
+        
         #display the tile selection sprite
         mainSurface.blit(tileSelectSprite, (selectSpriteX * 32, selectSpriteY * 32))
-
+                
 
         #display the players health
         font = pygame.font.Font("Assets/Fonts/EdselFont.ttf", 20)
@@ -402,17 +402,17 @@ def gameOver():
     while True:
         #check for pygame quit event
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT: 
                 exit()
-
+        
         font = pygame.font.Font("Assets/Fonts/EdselFont.ttf", 40)
         white = CollectionsModule.Color.white
         red = CollectionsModule.Color.red
 
         #display a button to return to the main title screen on win/loss
         #currently they both perform the same function just with different text
-        if(Player.health <= 0):
-            button("Game Over", playableWidth / 2, screenHeight / 2, 100, 50, white, red, mainInit)
+        if(Player.health <= 0):           
+            button("Game Over", playableWidth / 2, screenHeight / 2, 100, 50, white, red, mainInit)            
         else:
             button("Level Complete", playableWidth / 2, screenHeight / 2, 100, 50, white, red, mainInit)
 
