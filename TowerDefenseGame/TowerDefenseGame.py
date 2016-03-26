@@ -96,7 +96,9 @@ def initGame():
     logo = pygame.image.load("GameLogo.gif")
     logoRect = logo.get_rect()
     logoPos = (screenWidth / 2) - (logoRect.size[0]/2), (screenHeight / 4) - (logoRect.size[1]/2)
-       
+    
+
+
     #game loop using while the menu is active
     while True: 
         for event in pygame.event.get():
@@ -127,8 +129,7 @@ def initGame():
 #   Controls AI, rendering and joystick controls 
 #----------------------------------------------------------------------
 def mainGameLoop():   
-    #delay for 100 milliseconds so the user doesnt place a tower with the click from hitting play
-    pygame.time.delay(100)
+
 
     #configure the gamepad controller if one is connected
     controller = None
@@ -140,8 +141,11 @@ def mainGameLoop():
     #black background
     mainSurface.fill(CollectionsModule.Color.black)
 
+    #reset player information
     Player.health = 100
     Player.gold = 25
+    Player.enemiesKilled = 0
+    selectedTowerType = None
 
     #get the object group with our AI path nodes
     path = map1.get_layer_by_name("EnemyPath")
@@ -195,10 +199,17 @@ def mainGameLoop():
     Tower.Tower.groups = towerList
     Tower.Tower.enemyGroup = enemyList   
 
-    
+    towerType = []
+    towerType.append("Basic")
+    towerType.append("Cannon")
+    towerType.append("TEMP")
+    towerType.append("TEMP")
+
+    #The number of enemies that must be killed in order to win the level
+    maxEnemyCount = 2    
 
     #variables for controlling spawn rate of enemies 
-    enemyCount = 0
+    enemyCount = 0    
     spawnTick = 0
     spawnRate = 180
 
@@ -223,8 +234,8 @@ def mainGameLoop():
     #check if we have a controller before performing anything that pertains to the controller
     if(controller != None):            
         #get the bounds of the tiled map
-        xBound = playableWidth
-        yBound = screenHeight
+        xBound = playableWidth / 32
+        yBound = screenHeight / 32
         
         #time between JOYSTICK_MOVE_EVENTs
         timeBetweenEvents = 250
@@ -293,47 +304,57 @@ def mainGameLoop():
                             #make sure the selection is horizontally and vertically in a buildable area
                             if(selectSpriteX * 32 + 2 > area.x and selectSpriteX * 32 + 2< area.x + area.width):
                                 if(selectSpriteY * 32 + 2 > area.y and selectSpriteY * 32 + 2 < area.y + area.height):                            
+                                    towerCount = len(towerList)
+                                    #flag for when a tower already exists on the selected tile
+                                    invalidPlacement = False
+
                                     #make sure there is not a tower already in the selected spot
-                                    if(len(towerList) > 0):
+                                    if(towerCount > 0):
                                         for tower in towerList:
-                                            if(selectSpriteX * 32 != tower.pos[0] or selectSpriteY * 32 != tower.pos[1]):
-                                                #does user have enough gold
-                                                if(Player.gold >= 5):
-                                                    #spawn a new tower
-                                                    Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32))
-                                                    print("tower")
-                                                    break
+                                            if(selectSpriteX * 32 == tower.pos[0] and selectSpriteY * 32 == tower.pos[1]):
+                                                invalidPlacement = True
+                                                break
+
+                                        if(not invalidPlacement):
+                                            #does user have enough gold
+                                            if(Player.gold >= 5):
+                                                #spawn a new tower
+                                                Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32))                                                    
+                                                break
                                     else:                                        
-                                        Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32))
-                                        print("tower")
+                                        Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32))                                        
                                         break
 
 
             #check if user clicked the 'A' button
             if event.type == pygame.JOYBUTTONDOWN:
-                if controller.get_button(0):                                        
-                    #TODO: tower targets is currently hard coded we will base it on proximity in the future                                  
+                if controller.get_button(0):                                                            
                     #check if user is placing a tower
                     if(not outOfBounds):
                         for area in buildableList:                        
                             #make sure the selection is horizontally and vertically in a buildable area
                             if(selectSpriteX * 32 + 2 > area.x and selectSpriteX * 32 + 2< area.x + area.width):
                                 if(selectSpriteY * 32 + 2 > area.y and selectSpriteY * 32 + 2 < area.y + area.height):                            
-                                    #make sure there is not a tower already in the selected spot
-                                    if(len(towerList) > 0):
-                                        for tower in towerList:
-                                            if(selectSpriteX * 32 != tower.pos[0] or selectSpriteY * 32 != tower.pos[1]):
-                                                #does user have enough gold
-                                                if(Player.gold >= 5):
-                                                    #spawn a new tower
-                                                    Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32))
-                                                    print("tower")
-                                                    break
-                                    else:                                        
-                                        Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32))
-                                        print("tower")
-                                        break
+                                    towerCount = len(towerList)
+                                    #flag for when a tower already exists on the selected tile
+                                    invalidPlacement = False
 
+                                    #make sure there is not a tower already in the selected spot
+                                    if(towerCount > 0):
+                                        for tower in towerList:
+                                            if(selectSpriteX * 32 == tower.pos[0] and selectSpriteY * 32 == tower.pos[1]):
+                                                invalidPlacement = True
+                                                break
+
+                                        if(not invalidPlacement):
+                                            #does user have enough gold
+                                            if(Player.gold >= 5):
+                                                #spawn a new tower
+                                                Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32))                                                    
+                                                break
+                                    else:                                        
+                                        Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32))                                        
+                                        break
 
         #display all of the tiles from the tiled map
         for layer in map1.layers:
@@ -385,8 +406,19 @@ def mainGameLoop():
         textRect.center = ((screenWidth - playableWidth) / 2 + playableWidth), (screenHeight * 0.1)
         mainSurface.blit(textSurf, textRect)
 
+        #display all of the towers available for purchase
+        i = 0
+        j = 0
+        for tower in towerType:
+            buttonRect = pygame.Rect(0, 0, 80, 50)
+            buttonRect.center = (55 + playableWidth + 85 * (i % 2)), (screenHeight * 0.2 + 60 * j)
+            button(tower, buttonRect.x, buttonRect.y, buttonRect.width, buttonRect.height, CollectionsModule.Color.white, CollectionsModule.Color.red)            
+            i += 1
+            if(i % 2 == 0):
+                j += 1
 
-        if(Player.health <= 0):
+        #check if the player lost/won the level
+        if(Player.health <= 0 or Player.enemiesKilled == maxEnemyCount):
             gameOver()
 
         #update the display
@@ -414,7 +446,7 @@ def gameOver():
         if(Player.health <= 0):           
             button("Game Over", playableWidth / 2, screenHeight / 2, 100, 50, white, red, mainInit)            
         else:
-            button("Level Complete", playableWidth / 2, screenHeight / 2, 100, 50, white, red, mainInit)
+            button("Level Complete", playableWidth / 2, screenHeight / 2, 124, 50, white, red, mainInit)
 
         #update the display
         pygame.display.update()

@@ -49,13 +49,13 @@ class Enemy(pygame.sprite.Sprite):
         if(self.pos[0] + 2 >= self.playerBase.x and self.pos[0] + 2 <= self.playerBase.x + self.playerBase.width):
             if(self.pos[1] + 2 >= self.playerBase.y and self.pos[1] + 2 <= self.playerBase.y + self.playerBase.height):
                 #reduce player health when the enemy reaches the base
-                Player.changeHealth(self.damage)                
+                Player.health += self.damage              
 
                 #remove the enemy 
                 for tower in self.towerGroup:
                     if(tower.target == self):
                         tower.target = None
-                    self.kill()
+                self.kill()
         
 
         #kill the enemy when its health is 0 or less
@@ -64,6 +64,7 @@ class Enemy(pygame.sprite.Sprite):
             for tower in self.towerGroup:
                 if(tower.target == self):
                     tower.target = None
+            Player.enemiesKilled += 1
             self.kill()
 
 
