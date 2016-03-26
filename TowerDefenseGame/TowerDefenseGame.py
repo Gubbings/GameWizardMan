@@ -181,7 +181,6 @@ def mainGameLoop():
     #group of tower sprites
     towerList = pygame.sprite.Group()
     Tower.Tower.groups = towerList   
-
     #group of bullet sprites
     bulletList = pygame.sprite.Group()
     Bullet.Bullet.groups = bulletList
@@ -191,6 +190,8 @@ def mainGameLoop():
     Enemy.Enemy.groups = enemyList
     Enemy.Enemy.towerGroup = towerList
     Enemy.Enemy.bulletGroup = bulletList
+    Tower.Tower.enemyGroup = enemyList
+
 
     #variables for controlling spawn rate of enemies 
     enemyCount = 0

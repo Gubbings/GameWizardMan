@@ -16,6 +16,7 @@ class Tower(pygame.sprite.Sprite):
         self.bulletTick = 0
         self.cost = 5
         self.target = target
+        self.rect.inflate_ip(5, 5)
         Player.gold -= self.cost
 
     #update method runs every time the sprite group calls update
@@ -32,4 +33,6 @@ class Tower(pygame.sprite.Sprite):
             self.bulletTick = self.bulletTick + 1
         else:
             for bullet in self.bullets:
-                bullet.target = None      
+                bullet.target = None 
+            if(pygame.sprite.spritecollide(self, self.enemyGroup, 1)):
+                print("HIT")
