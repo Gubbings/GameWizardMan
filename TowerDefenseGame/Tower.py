@@ -7,16 +7,16 @@ class Tower(pygame.sprite.Sprite):
 
     enemyGroup = None
 
-    def __init__(self, image, pos):
+    def __init__(self, image, pos, cost, fireRate):
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.pos = pos
         self.image = image  
         self.rect = self.image.get_rect()
         self.radius = 32
         self.bullets = []
-        self.fireRate = 60
+        self.fireRate = fireRate
         self.bulletTick = 0
-        self.cost = 5
+        self.cost = cost
         self.target = None
                 
         #enlarge the collision rectangle
@@ -36,6 +36,7 @@ class Tower(pygame.sprite.Sprite):
                 bullet.rect.y = self.rect.y
                 self.bulletTick = 0
                 self.bullets.append(bullet)
+                
             self.bulletTick = self.bulletTick + 1
 
             #when the target moves out of range reset target to none

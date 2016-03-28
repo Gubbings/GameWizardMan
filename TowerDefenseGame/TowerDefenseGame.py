@@ -31,6 +31,20 @@ map1 = load_pygame("Assets/Maps/testMap.tmx")
 #music enabled flag
 enableMusic = True
 
+#the selected tower type
+selectedTowerType = None
+
+#tower images
+basicTowerImg = pygame.transform.scale(pygame.image.load("Assets/Sprites/basicTower.png"), (32,32))           
+cannonTowerImg = pygame.transform.scale(pygame.image.load("Assets/Sprites/cannonTower.png"), (32,32))           
+
+#list of possible towers to build 
+towerType = []
+towerType.append("Basic")
+towerType.append("Cannon")
+#placeholders for future tower
+towerType.append("TEMP")
+towerType.append("TEMP")
 
 #function used for primary initialization of pygame and background color
 #this is used as the entry point into the game logic
@@ -98,7 +112,6 @@ def initGame():
     logoPos = (screenWidth / 2) - (logoRect.size[0]/2), (screenHeight / 4) - (logoRect.size[1]/2)
     
 
-
     #game loop using while the menu is active
     while True: 
         for event in pygame.event.get():
@@ -130,7 +143,6 @@ def initGame():
 #----------------------------------------------------------------------
 def mainGameLoop():   
 
-
     #configure the gamepad controller if one is connected
     controller = None
     if(pygame.joystick.get_count() > 0):
@@ -144,7 +156,8 @@ def mainGameLoop():
     #reset player information
     Player.health = 100
     Player.gold = 25
-    Player.enemiesKilled = 0
+    Player.enemiesKilled = 0    
+    global selectedTowerType
     selectedTowerType = None
 
     #get the object group with our AI path nodes
@@ -199,27 +212,20 @@ def mainGameLoop():
     Tower.Tower.groups = towerList
     Tower.Tower.enemyGroup = enemyList   
 
-    towerType = []
-    towerType.append("Basic")
-    towerType.append("Cannon")
-    towerType.append("TEMP")
-    towerType.append("TEMP")
-
     #The number of enemies that must be killed in order to win the level
-    maxEnemyCount = 2    
+    maxEnemyCount = 50   
 
     #variables for controlling spawn rate of enemies 
     enemyCount = 0    
     spawnTick = 0
     spawnRate = 180
+    spawnDelay = 300
+    spawnDelayTick = 0
 
-    #create an enemy
-    enemyGif = pygame.transform.scale(pygame.image.load("Assets/Sprites/enemy1.png"), (32,32))    
-    enemy = Enemy.Enemy(nodes, enemyGif, playerBase)
+    #enemy image
+    enemyGif = pygame.transform.scale(pygame.image.load("Assets/Sprites/enemy1.png"), (32,32))       
     
-    #create a tower
-    towerGif = pygame.image.load("Assets/Sprites/towerTemp.gif")    
-    
+
     #position of the tile selection sprite    
     selectSpriteX = 0
     selectSpriteY = 0
@@ -316,13 +322,12 @@ def mainGameLoop():
                                                 break
 
                                         if(not invalidPlacement):
-                                            #does user have enough gold
-                                            if(Player.gold >= 5):
-                                                #spawn a new tower
-                                                Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32))                                                    
-                                                break
-                                    else:                                        
-                                        Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32))                                        
+                                            #spawn a new tower
+                                            buildTower(selectSpriteX, selectSpriteY)
+                                            break
+                                    else:                                                                                
+                                        #spawn a new tower                                                
+                                        buildTower(selectSpriteX, selectSpriteY)
                                         break
 
 
@@ -347,14 +352,12 @@ def mainGameLoop():
                                                 break
 
                                         if(not invalidPlacement):
-                                            #does user have enough gold
-                                            if(Player.gold >= 5):
-                                                #spawn a new tower
-                                                Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32))                                                    
-                                                break
-                                    else:                                        
-                                        Tower.Tower(towerGif, (selectSpriteX * 32, selectSpriteY * 32))                                        
+                                            buildTower(selectSpriteX, selectSpriteY)
+                                            break
+                                    else:                                                                         
+                                        buildTower(selectSpriteX, selectSpriteY)
                                         break
+
 
         #display all of the tiles from the tiled map
         for layer in map1.layers:
@@ -364,19 +367,21 @@ def mainGameLoop():
                 for x, y, image in layer.tiles():                
                     mainSurface.blit(image, (32 * x, 32 * y))                  
 
-        #spawn new enemies based on the spawn rate
-        if(spawnTick >= spawnRate):
-            Enemy.Enemy(nodes, enemyGif, playerBase)
-            enemyCount += 1
-
-            #after 15 enemies have spawned start spawning extra from the second path
-            if(enemyCount > 15):
-                Enemy.Enemy(nodes2, enemyGif, playerBase)
+        if(spawnDelayTick >= spawnDelay): 
+            #spawn new enemies based on the spawn rate
+            if(spawnTick >= spawnRate):
+                Enemy.Enemy(nodes, enemyGif, playerBase)
                 enemyCount += 1
 
-            spawnTick = 0       
-        spawnTick = spawnTick + 1
+                #after 15 enemies have spawned start spawning extra from the second path
+                if(enemyCount > 15):
+                    Enemy.Enemy(nodes2, enemyGif, playerBase)
+                    enemyCount += 1
 
+                spawnTick = 0       
+            spawnTick = spawnTick + 1
+        else:
+            spawnDelayTick += 1
 
         #update tower sprites
         towerList.update()
@@ -401,21 +406,37 @@ def mainGameLoop():
         textRect.center = ((screenWidth - playableWidth) / 2 + playableWidth), (screenHeight * 0.05)
         mainSurface.blit(textSurf, textRect)
 
+        #display the players gold (resources for building towers)
         textSurf = text_objects("Gold: " + str(Player.gold), font, CollectionsModule.Color.white)
         textRect = textSurf.get_rect()
         textRect.center = ((screenWidth - playableWidth) / 2 + playableWidth), (screenHeight * 0.1)
+        mainSurface.blit(textSurf, textRect)
+
+        #display the amount of remaining enemies in the level
+        textSurf = text_objects("Remaining Enemies: " + str(maxEnemyCount - Player.enemiesKilled), font, CollectionsModule.Color.white)
+        textRect = textSurf.get_rect()
+        textRect.center = ((screenWidth - playableWidth) / 2 + playableWidth), (screenHeight * 0.15)
         mainSurface.blit(textSurf, textRect)
 
         #display all of the towers available for purchase
         i = 0
         j = 0
         for tower in towerType:
-            buttonRect = pygame.Rect(0, 0, 80, 50)
-            buttonRect.center = (55 + playableWidth + 85 * (i % 2)), (screenHeight * 0.2 + 60 * j)
-            button(tower, buttonRect.x, buttonRect.y, buttonRect.width, buttonRect.height, CollectionsModule.Color.white, CollectionsModule.Color.red)            
+            height = 75
+            width = 80
+            buttonRect = pygame.Rect(0, 0, width, height)
+            buttonRect.center = (55 + playableWidth + 85 * (i % 2)), (screenHeight * 0.3 + (height + 10) * j)
+            button(tower, buttonRect.x, buttonRect.y, buttonRect.width, buttonRect.height, CollectionsModule.Color.white, CollectionsModule.Color.red, lambda: selectTower(i))            
             i += 1
             if(i % 2 == 0):
                 j += 1
+
+        #display the selected tower type to the user
+        if(selectedTowerType != None):    
+            textSurf = text_objects("Selected Tower: " + selectedTowerType, font, CollectionsModule.Color.white)
+            textRect = textSurf.get_rect()
+            textRect.center = ((screenWidth - playableWidth) / 2 + playableWidth), (screenHeight * 0.6)
+            mainSurface.blit(textSurf, textRect)
 
         #check if the player lost/won the level
         if(Player.health <= 0 or Player.enemiesKilled == maxEnemyCount):
@@ -426,6 +447,21 @@ def mainGameLoop():
         clock.tick(60)
 
 
+
+#function for placing new towers into the game world
+def buildTower(selectSpriteX, selectSpriteY):
+    global selectedTowerType
+    #spawn a new tower                                                
+    if(selectedTowerType == "Basic"):
+        #does user have enough gold
+        if(Player.gold >= 5):                                            
+            Tower.Tower(basicTowerImg, (selectSpriteX * 32, selectSpriteY * 32), 5, 60)                                                   
+            
+    elif(selectedTowerType == "Cannon"):
+        #does user have enough gold
+        if(Player.gold >= 10):                                            
+            Tower.Tower(cannonTowerImg, (selectSpriteX * 32, selectSpriteY * 32), 10, 40)
+            
 
 
 #function to execute when the player wins or loses the level
@@ -453,6 +489,10 @@ def gameOver():
         clock.tick(60)
 
 
+#callback function for selecting a tower
+def selectTower(towerTypeIndex):
+    global selectedTowerType    
+    selectedTowerType = towerType[towerTypeIndex]        
 
 #call the main initialization function to start running the game
 mainInit()

@@ -43,7 +43,7 @@ class Enemy(pygame.sprite.Sprite):
                 
         #check if a bullet has collided with the enemy
         if(pygame.sprite.spritecollide(self, self.bulletGroup, 1)):
-           self.health -= 1
+           self.health -= 2
         
         #check if the enemy reached the player base
         if(self.pos[0] + 2 >= self.playerBase.x and self.pos[0] + 2 <= self.playerBase.x + self.playerBase.width):
@@ -65,7 +65,10 @@ class Enemy(pygame.sprite.Sprite):
                 if(tower.target == self):
                     tower.target = None
             Player.enemiesKilled += 1
+            
+            
             self.kill()
+            
 
 
         nodes = self.nodeList        
