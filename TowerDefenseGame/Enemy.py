@@ -56,6 +56,8 @@ class Enemy(pygame.sprite.Sprite):
                     if(tower.target == self):
                         tower.target = None
                 self.kill()
+                deathSound = pygame.mixer.Sound('death.mp3');
+                deathSound.play();
         
 
         #kill the enemy when its health is 0 or less

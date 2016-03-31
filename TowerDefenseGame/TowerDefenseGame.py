@@ -11,6 +11,7 @@ import Tower
 import Bullet
 import Enemy
 import Player
+import time
 
 #clock for controlling the FPS
 clock = pygame.time.Clock()
@@ -46,12 +47,17 @@ towerType.append("Cannon")
 towerType.append("TEMP")
 towerType.append("TEMP")
 
+#sounds from http://soundbible.com/
+
+
+
 #function used for primary initialization of pygame and background color
 #this is used as the entry point into the game logic
 def mainInit():
     #initialize pygame
     pygame.init()
     pygame.joystick.init()
+   
           
     #set the background color
     backgroundColor = 66, 61, 60
@@ -111,6 +117,11 @@ def initGame():
     logoRect = logo.get_rect()
     logoPos = (screenWidth / 2) - (logoRect.size[0]/2), (screenHeight / 4) - (logoRect.size[1]/2)
     
+    #define sounds and music
+    pygame.mixer.music.load('bMusic.mp3');
+    pygame.mixer.music.play(-1);
+
+
 
     #game loop using while the menu is active
     while True: 
@@ -451,8 +462,11 @@ def mainGameLoop():
 #function for placing new towers into the game world
 def buildTower(selectSpriteX, selectSpriteY):
     global selectedTowerType
+
     #spawn a new tower                                                
     if(selectedTowerType == "Basic"):
+        placeTowerSound = pygame.mixer.Sound('place.mp3');
+        placeTowerSound.play();
         #does user have enough gold
         if(Player.gold >= 5):                                            
             Tower.Tower(basicTowerImg, (selectSpriteX * 32, selectSpriteY * 32), 5, 60)                                                   

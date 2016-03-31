@@ -18,7 +18,7 @@ class Tower(pygame.sprite.Sprite):
         self.bulletTick = 0
         self.cost = cost
         self.target = None
-                
+ 
         #enlarge the collision rectangle
         self.rect = self.rect.inflate(150, 150)        
         Player.gold -= self.cost
@@ -31,6 +31,8 @@ class Tower(pygame.sprite.Sprite):
         if self.target != None:
             #fire a bullet based on the fire rate
             if self.bulletTick == self.fireRate:
+                shootSound = pygame.mixer.Sound('shoot.mp3')
+                shootSound.play()
                 bullet = Bullet.Bullet(self.target, self.rect.x - self.target.rect.x, self.rect.y - self.target.rect.y)
                 bullet.rect.x = self.rect.x
                 bullet.rect.y = self.rect.y
