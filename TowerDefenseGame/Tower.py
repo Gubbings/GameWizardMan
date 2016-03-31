@@ -10,7 +10,7 @@ class Tower(pygame.sprite.Sprite):
     def __init__(self, image, pos, cost, fireRate):
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.pos = pos
-        self.image = image  
+        self.image = image
         self.rect = self.image.get_rect()
         self.radius = 32
         self.bullets = []
@@ -18,27 +18,27 @@ class Tower(pygame.sprite.Sprite):
         self.bulletTick = 0
         self.cost = cost
         self.target = None
- 
+
         #enlarge the collision rectangle
-        self.rect = self.rect.inflate(150, 150)        
+        self.rect = self.rect.inflate(150, 150)
         Player.gold -= self.cost
 
     #update method runs every time the sprite group calls update
     def update(self):
         self.rect.topleft = self.pos
-        
+
         #check if we have a target
         if self.target != None:
             #fire a bullet based on the fire rate
             if self.bulletTick == self.fireRate:
-                shootSound = pygame.mixer.Sound('shoot.mp3')
+                shootSound = pygame.mixer.Sound('shoot.wav')
                 shootSound.play()
                 bullet = Bullet.Bullet(self.target, self.rect.x - self.target.rect.x, self.rect.y - self.target.rect.y)
                 bullet.rect.x = self.rect.x
                 bullet.rect.y = self.rect.y
                 self.bulletTick = 0
                 self.bullets.append(bullet)
-                
+
             self.bulletTick = self.bulletTick + 1
 
             #when the target moves out of range reset target to none
@@ -50,7 +50,6 @@ class Tower(pygame.sprite.Sprite):
                 bullet.target = None
 
             #check for collision with an enemy to find a target
-            collisions = pygame.sprite.spritecollide(self, self.enemyGroup, False)            
+            collisions = pygame.sprite.spritecollide(self, self.enemyGroup, False)
             if(len(collisions) > 0):
                 self.target = collisions[0]
-                              
