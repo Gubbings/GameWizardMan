@@ -1,4 +1,3 @@
 # GameWizardMan
-Rek people with the towers
 
-TD game based in a fantasy world.
+Tower defence game based in a fantasy world. Created as a final project for the Game Software Engineering class.
